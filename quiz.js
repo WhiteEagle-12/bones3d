@@ -175,7 +175,7 @@ function setXray(on){
   for(const m of mats){m.transparent=on;m.depthWrite=!on;m.needsUpdate=true}
   for(const o of Object.values(meshes)){const w=o.material.userData.whole.value>0;o.renderOrder=w?1:0;if(w&&on){o.material.transparent=false;o.material.depthWrite=true}}
 }
-function setVisible(v){for(const [name,o] of Object.entries(meshes))o.visible=v.only?name===v.only:!(v.hide||[]).includes(name)}
+function setVisible(v){for(const [name,o] of Object.entries(meshes))o.visible=v.show?v.show.includes(name):v.only?name===v.only:!(v.hide||[]).includes(name)}
 const AX={sag:[1,0,0],cor:[0,0,1],tra:[0,1,0]};
 function setCut(mode,n,s){
   $('cut').value=mode;
@@ -197,7 +197,7 @@ $('cut').addEventListener('change',e=>{
 function guessMode(n){const a=n.map(Math.abs);return a[0]>.9?'sag':a[2]>.9?'cor':a[1]>.9?'tra':'sag'}
 function frame(v){
   const t=new THREE.Vector3(...v.t),d=new THREE.Vector3(...v.d).normalize();
-  const fit=Math.min(1,camera.aspect),dist=v.s*0.5/Math.tan(THREE.MathUtils.degToRad(15))/fit*1.08;
+  const h=app.clientHeight,fit=Math.min(1,camera.aspect,(h-SH)/(h+SH)),dist=v.s*0.5/Math.tan(THREE.MathUtils.degToRad(15))/fit*1.08;
   camera.up.set(...v.up);camera.position.copy(t).addScaledVector(d,-dist);controls.target.copy(t);camera.lookAt(t);controls.update();
 }
 function resetView(){
